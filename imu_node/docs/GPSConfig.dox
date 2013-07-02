@@ -1,0 +1,7 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~tcphost" : \b [str] The serial port where the hokuyo device can be found min: , default: 192.168.0.60, max: 
+- \b "~tcpport" : \b [int] The serial port where the hokuyo device can be found min: -2147483648, default: 10002, max: 2147483647
+

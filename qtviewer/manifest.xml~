@@ -1,0 +1,26 @@
+<package>
+  <description brief="imu_gps">
+
+     imu_gps
+
+  </description>
+  <author>ramazan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/imu_gps</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="qt_build"/>
+  <depend package="roscpp"/>
+  <depend package="image_transport"/>
+  <depend package="compressed_image_transport"/>
+  <depend package="cv_bridge"/>
+  <depend package="opencv2"/>
+
+
+  <rosdep name="libqt4-dev"/>
+  <depend package="qt_build"/>
+  <depend package="roscpp"/>
+</package>

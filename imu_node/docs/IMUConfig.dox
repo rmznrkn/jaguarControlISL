@@ -1,0 +1,7 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~tcphost" : \b [str] imu ip min: , default: 192.168.0.60, max: 
+- \b "~tcpport" : \b [int] imu port min: -2147483648, default: 10001, max: 2147483647
+
