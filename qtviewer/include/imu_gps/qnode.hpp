@@ -36,13 +36,12 @@
 #include <compressed_image_transport/compression_common.h>
 #include <opencv2/opencv.hpp>
 #include <time.h>
-#include <fstream.h>
 
 #include <axis_camera/Axis.h>
 
 #include <QGraphicsItem>
 #include <QtGui>
-
+#include <rosbag/bag.h>
 
 #include <drrobot_jaguarV2_player/MotorInfo.h>
 #include <drrobot_jaguarV2_player/MotorInfoArray.h>
@@ -171,6 +170,7 @@ private:
         STYPE_PTZ_CAMERA,
         STYPE_FRONT_CAMERA,
         STYPE_PTZ_STATUS,
+        STYPE_DRROBOT_PLAYER,
         STYPE_MAX
     }SensorType;
 
@@ -182,6 +182,10 @@ private:
 
 
 public:
+    template<class T>
+    bool bagwrite(std::string const& topic, T const& msg, const char *fileName, rosbag::bagmode::BagMode mode);
+    template<class T>
+    bool logSensorMessage(std::string const& topic,  T const& msg, int stype);
     bool sensorMessageWriteToFile(u_int8_t *rawMessage, u_int32_t rawMessageLen, int stype, char *sensorName);
     bool imageWriteToFile(QImage* qimage, int stype, char *sensorName);
     void setSensorLoggingDirPath(const char *dirPath);
@@ -191,50 +195,13 @@ public:
 
 class Logger
 {
-private:
-    FILE *outFilePtr;
-    
 public:
-    Logger(FILE *fp){
-    	outFilePtr = fp;
-    	/*
-    	    #include <fstream.h>
-    ...
-    class Data {
-        int    key;
-        double value;
-    };
-    
-    Data x;
-    Data *y = new Data[10];
+    static const int  MAX_PATH_LEN = 260;
+    static char mainDirPath[MAX_PATH_LEN];
+    static char fileName[MAX_PATH_LEN];
 
-    fstream myFile ("data.bin", ios::in | ios::out | ios::binary);
-    myFile.seekp (location1);
-    myFile.write ((char*)&x, sizeof (Data));
-    ...
-    myFile.seekg (0);
-    myFile.read ((char*)y, sizeof (Data) * 10);
-    
-    
-    
-    /////////////////////////777
-        char buffer[100];
-    ofstream myFile ("data.bin", ios::out | ios::binary);
-    myFile.write (buffer, 100);
-    	*/
-    }
-    Logger(char *fileName){
-    	outFilePtr = fopen(fileName, "r+b");
-    	if(outFilePtr == NULL)
-    	   outFilePtr = fopen(fileName, "w+b");
-    }
-    
-    void next(unsigned char *data, int size)
-    {
-    	//fwrite(outFilePtr, data , 1, size);
-    }
-    
+    void saveScan(unsigned char *data, int dlen);
+
 };
-
 }  // namespace imu_gps
 #endif /* imu_gps_QNODE_HPP_ */
