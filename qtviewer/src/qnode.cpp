@@ -1,4 +1,3 @@
-
 /**
  * @file /src/qnode.cpp
  *
@@ -35,6 +34,7 @@
 #include <drrobot_jaguarV2_player/CustomSensor.h>
 #include <std_msgs/Header.h>
 
+#include <rosbag/bag.h>
 
 #include <time.h>
 #include <QDir>
@@ -453,6 +453,75 @@ bool QNode::sensorMessageWriteToFile(u_int8_t *rawMessage, u_int32_t rawMessageL
     return true;
 }
 
+bool getFileName(QString &fileName, int stype, char *sensorName)
+{
+    if(stype >= QNode::STYPE_MAX)
+    {
+        return false;
+    }
+
+    if(!sensorLogEnabled[stype] && !saveSingleSensorMessage[stype])
+    {
+        return false;
+    }
+
+    QDir dir(sensorLogDirPath);
+
+    if(!dir.exists())
+    {
+        dir.mkdir(sensorLogDirPath);
+    }
+
+    if(!dir.exists())
+    {
+        return false;
+    }
+
+    QTime currtime = QTime::currentTime();
+
+    QString subDir;
+    QDate currDate = QDate::currentDate();
+
+    char cstr[100];
+
+    sprintf(cstr, "%0.4d%0.2d%0.2d",currDate.year(),currDate.month(), currDate.day() );
+
+    if(sensorLogDirPath[strlen(sensorLogDirPath)-1] == '/')
+        subDir =  (QString)sensorLogDirPath + (QString)cstr;//QString::number(currDate.year()) +QString::number(currDate.month()) + QString::number(currDate.day());
+    else
+        subDir =  (QString)sensorLogDirPath + "/" + (QString)cstr;//+ QString::number(currDate.year()) +QString::number(currDate.month()) + QString::number(currDate.day());
+
+    dir = QDir(subDir);
+    if(!dir.exists())
+    {
+        dir.mkdir(subDir);
+    }
+
+    if(!dir.exists())
+    {
+        return false;
+    }
+
+    subDir = subDir + "/" + sensorName;
+
+    dir = QDir(subDir);
+    if(!dir.exists())
+    {
+        dir.mkdir(subDir);
+    }
+
+    if(!dir.exists())
+    {
+        return false;
+    }
+
+    sprintf(cstr, "%0.2d%0.2d%0.2d.png",currtime.hour(),currtime.minute(),currtime.second());
+
+    fileName = subDir + "/" + (QString)cstr;
+    
+    return true;
+}
+
 void QNode::callback_imu(const imu_node::imuConstPtr &imu){
     char cstr[100];
     std_msgs::String msg;
@@ -531,8 +600,20 @@ void QNode::callback_nawsatfix(const sensor_msgs::NavSatFixConstPtr &fix)
 void QNode::callback_scan(const sensor_msgs::LaserScanConstPtr& scan)
 {
   sensor_msgs::LaserScan msg = *scan;
-
-  sensorMessageWriteToFile((u_int8_t*)&msg, sizeof(sensor_msgs::LaserScan),STYPE_LASER,"LASER");
+/*
+  QString fileName = "";
+  if(getFileName(fileName.c_str(),STYPE_LASER,"scan"))
+  {
+     osbag::Bag bag;
+     bag.open(fileName.c_str(), rosbag::bagmode::Append);
+     bag.write("scan", ros::Time::now(), msg);
+     bag.close();	
+  }
+  */
+  //sensorMessageWriteToFile((u_int8_t*)&msg, sizeof(sensor_msgs::LaserScan),STYPE_LASER,"LASER");
+/*
+  
+*/
 
   Q_EMIT scanSignal(*scan);
   //  Q_EMIT gpsSignal_raw("SCAN");
