@@ -36,6 +36,7 @@
 #include <compressed_image_transport/compression_common.h>
 #include <opencv2/opencv.hpp>
 #include <time.h>
+#include <fstream.h>
 
 #include <axis_camera/Axis.h>
 
@@ -196,6 +197,31 @@ private:
 public:
     Logger(FILE *fp){
     	outFilePtr = fp;
+    	/*
+    	    #include <fstream.h>
+    ...
+    class Data {
+        int    key;
+        double value;
+    };
+    
+    Data x;
+    Data *y = new Data[10];
+
+    fstream myFile ("data.bin", ios::in | ios::out | ios::binary);
+    myFile.seekp (location1);
+    myFile.write ((char*)&x, sizeof (Data));
+    ...
+    myFile.seekg (0);
+    myFile.read ((char*)y, sizeof (Data) * 10);
+    
+    
+    
+    /////////////////////////777
+        char buffer[100];
+    ofstream myFile ("data.bin", ios::out | ios::binary);
+    myFile.write (buffer, 100);
+    	*/
     }
     Logger(char *fileName){
     	outFilePtr = fopen(fileName, "r+b");
