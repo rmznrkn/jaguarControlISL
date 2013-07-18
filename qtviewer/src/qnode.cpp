@@ -452,7 +452,7 @@ bool QNode::sensorMessageWriteToFile(u_int8_t *rawMessage, u_int32_t rawMessageL
     }
     return true;
 }
-
+/*
 bool getFileName(QString &fileName, int stype, char *sensorName)
 {
     if(stype >= QNode::STYPE_MAX)
@@ -521,7 +521,118 @@ bool getFileName(QString &fileName, int stype, char *sensorName)
     
     return true;
 }
+*/
+/*
+template<class T>
+    void write(std::string const& topic, T const& msg);
+template<class T>
+    void write(std::string const& topic, boost::shared_ptr<T const> const& msg);
+template<class T>*/
+/*
+bool bagwrite(std::string const& topic, boost::shared_ptr<T> const& msg)
+{
+    rosbag::Bag bag;
+    bag.open(filePath.c_str(), rosbag::bagmode::Append);
+    bag.write(topic, ros::Time::now(), msg);
+    bag.close();	
+}
+bool logSensorMessage(std::string const& topic, boost::shared_ptr<T> const& msg, int stype)
+{
+    if(stype >= QNode::STYPE_MAX)
+    {
+        return false;
+    }
 
+    if(!sensorLogEnabled[stype] && !saveSingleSensorMessage[stype])
+    {
+        return false;
+    }
+    
+    QDir dir(sensorLogDirPath);
+
+    if(!dir.exists())
+    {
+        dir.mkdir(sensorLogDirPath);
+    }
+
+    if(!dir.exists())
+    {
+        return false;
+    }
+
+    QTime currtime = QTime::currentTime();
+
+    QString subDir;
+    QDate currDate = QDate::currentDate();
+
+    char cstr[100];
+
+    sprintf(cstr, "%0.4d%0.2d%0.2d",currDate.year(),currDate.month(), currDate.day() );
+
+    if(sensorLogDirPath[strlen(sensorLogDirPath)-1] == '/')
+        subDir =  (QString)sensorLogDirPath + (QString)cstr;//QString::number(currDate.year()) +QString::number(currDate.month()) + QString::number(currDate.day());
+    else
+        subDir =  (QString)sensorLogDirPath + "/" + (QString)cstr;//+ QString::number(currDate.year()) +QString::number(currDate.month()) + QString::number(currDate.day());
+
+    dir = QDir(subDir);
+    if(!dir.exists())
+    {
+        dir.mkdir(subDir);
+    }
+
+    if(!dir.exists())
+    {
+        return false;
+    }
+
+    subDir = subDir + "/" + sensorName;
+
+    dir = QDir(subDir);
+    if(!dir.exists())
+    {
+        dir.mkdir(subDir);
+    }
+
+    if(!dir.exists())
+    {
+        return false;
+    }
+
+    sprintf(cstr, "H%0.2d.dat",currtime.hour());
+
+    QString filePath = subDir + "/" + (QString)cstr;
+    QFile file(filePath);
+
+    if(file.exists())
+        file.open(QIODevice::Append);
+    else
+    {
+       file.open(QIODevice::WriteOnly);
+    }
+
+    if(!file.isOpen())
+        return false;
+    
+    file.close();
+    
+    if(sensorLogEnabled[stype])
+    {
+        if(sensorLastSaveTime[stype].msecsTo(currtime) >= sensorLogMinMessagePeriodInMSec[stype])
+        {
+ 
+             bagwrite(topic, msg);
+             sensorLastSaveTime[stype] = currtime;
+        }
+    }
+    else if(saveSingleSensorMessage[stype])
+    {
+        bagwrite(topic, msg);             
+        sensorLastSaveTime[stype] = currtime;
+        saveSingleSensorMessage[stype] = false;
+    }
+    return true;
+}
+*/    
 void QNode::callback_imu(const imu_node::imuConstPtr &imu){
     char cstr[100];
     std_msgs::String msg;
