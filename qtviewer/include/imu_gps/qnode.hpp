@@ -190,13 +190,25 @@ public:
 
 class Logger
 {
+private:
+    FILE *outFilePtr;
+    
 public:
-    static const int  MAX_PATH_LEN = 260;
-    static char mainDirPath[MAX_PATH_LEN];
-    static char fileName[MAX_PATH_LEN];
-
-    void saveScan(unsigned char *data, int dlen);
-
+    Logger(FILE *fp){
+    	outFilePtr = fp;
+    }
+    Logger(char *fileName){
+    	outFilePtr = fopen(fileName, "r+b");
+    	if(outFilePtr == NULL)
+    	   outFilePtr = fopen(fileName, "w+b");
+    }
+    
+    void next(unsigned char *data, int size)
+    {
+    	//fwrite(outFilePtr, data , 1, size);
+    }
+    
 };
+
 }  // namespace imu_gps
 #endif /* imu_gps_QNODE_HPP_ */
