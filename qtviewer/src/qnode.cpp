@@ -227,8 +227,8 @@ bool QNode::init() {
     subscriber_ptzStatus = n.subscribe("axis/state",1,&QNode::callback_PTZStatus,this);
 
     
-    subscriber_motorSensorSub = n.subscribe("drrobot_motor", 1,&QNode::motorSensorCallback,this);
-    
+    subscriber_motorSensorSub = n.subscribe("/drrobot_player1/drrobot_motor", 1,&QNode::motorSensorCallback,this);
+                                            ///drrobot_player1/drrobot_motor
     velocityPublisher = n.advertise<geometry_msgs::Twist>("drrobot_player1/drrobot_cmd_vel",1);
     
 
@@ -306,7 +306,7 @@ void QNode::callback_frontCamera(const sensor_msgs::ImageConstPtr& msg)
     
 void QNode::motorSensorCallback(const drrobot_jaguarV2_player::MotorInfoArray::ConstPtr& msg)
     {
-         logSensorMessage("drrobot_player1/drrobot_motor", *msg, STYPE_DRROBOT_PLAYER );
+         logSensorMessage("drrobot_motor", *msg, STYPE_DRROBOT_PLAYER );
 
 
         int msgSize = msg->motorInfos.capacity();
